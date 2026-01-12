@@ -9,15 +9,13 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; overflow: hidden; }
         .app-container { max-width: 400px; margin: 0 auto; background: white; height: 100vh; display: flex; flex-direction: column; position: relative; }
-        .nav-btn { flex: 1; padding: 12px 5px; text-align: center; color: #94a3b8; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-btn { flex: 1; padding: 10px 2px; text-align: center; color: #94a3b8; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .nav-btn.active { color: #10b981; border-top: 3px solid #10b981; background: #f0fdf4; }
-        .nav-btn span { font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .card { background: #f1f5f9; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
-        .badge-card { border: 2px solid transparent; transition: 0.4s; }
-        .badge-owned { background: #ffffff !important; border-color: #10b981 !important; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1); opacity: 1 !important; }
+        .nav-btn span { font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .card { background: #f1f5f9; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         .hidden { display: none; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         #setup-overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
+        .reward-card { border: 1px solid #e2e8f0; border-radius: 15px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -25,10 +23,10 @@
 <div class="app-container">
     
     <div id="setup-overlay">
-        <h2 class="text-2xl font-black text-emerald-600 mb-2 italic uppercase">Hoş Geldin!</h2>
-        <p class="text-xs text-slate-500 mb-6 font-semibold uppercase tracking-tighter">Tasarruf hedefini belirlemek için son iki ayın verilerini girmelisin.</p>
+        <h2 class="text-2xl font-black text-emerald-600 mb-2 italic uppercase text-center">EKO-LİG BAŞLIYOR</h2>
+        <p class="text-[10px] text-slate-500 mb-6 font-bold text-center uppercase tracking-widest">Tasarruf hedefini belirlemek için son iki ayın verilerini girmelisin.</p>
         
-        <div class="space-y-6 flex-1">
+        <div class="space-y-4 flex-1">
             <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
                 <h4 class="text-[10px] font-black text-blue-600 uppercase mb-3"><i class="fa-solid fa-bolt mr-2"></i>Elektrik Baz Verileri (kWh)</h4>
                 <div class="grid grid-cols-2 gap-3">
@@ -36,7 +34,6 @@
                     <input type="number" id="base-e2" placeholder="2. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-blue-200">
                 </div>
             </div>
-
             <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
                 <h4 class="text-[10px] font-black text-orange-600 uppercase mb-3"><i class="fa-solid fa-fire mr-2"></i>Doğal Gaz Baz Verileri (m³)</h4>
                 <div class="grid grid-cols-2 gap-3">
@@ -45,10 +42,7 @@
                 </div>
             </div>
         </div>
-        
-        <button onclick="finishSetup()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm tracking-widest mt-6">
-            HEDEFLERİMİ OLUŞTUR
-        </button>
+        <button onclick="finishSetup()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-sm tracking-widest mt-4">HEDEFLERİMİ OLUŞTUR</button>
     </div>
 
     <div class="p-6 flex justify-between items-center border-b bg-white">
@@ -62,7 +56,8 @@
     </div>
 
     <div id="content" class="flex-1 p-6 overflow-y-auto no-scrollbar pb-24">
-        <div id="view-home" class="space-y-6">
+        
+        <div id="view-home" class="space-y-4">
             <div class="grid grid-cols-2 gap-3 text-white">
                 <div class="bg-blue-600 p-4 rounded-3xl shadow-md">
                     <p class="text-[8px] font-bold uppercase opacity-80">Elek. Ort.</p>
@@ -73,31 +68,74 @@
                     <h3 class="text-xl font-black"><span id="avg-g">0</span> <small class="text-[10px]">m³</small></h3>
                 </div>
             </div>
+            
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Kazanılan Rozetler</h3>
+            <div id="badge-container" class="space-y-2"></div>
 
-            <div class="space-y-3">
-                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Kazanılan Rozetler</h3>
-                <div id="badge-container" class="space-y-3"></div>
-                <button onclick="resetApp()" class="w-full text-[9px] text-slate-300 font-bold mt-8 uppercase tracking-widest">Verileri Sıfırla</button>
+            <div class="mt-10 p-4 border-2 border-red-100 rounded-2xl bg-red-50 text-center">
+                <p class="text-[10px] text-red-600 font-bold mb-2 uppercase">Yeni bir test başlatmak için:</p>
+                <button onclick="resetApp()" class="w-full bg-red-600 text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-red-200">TÜM VERİLERİ SIFIRLA</button>
             </div>
         </div>
 
         <div id="view-scan" class="hidden space-y-4">
             <div class="bg-blue-50 border border-blue-100 p-5 rounded-3xl">
-                <label class="text-[10px] text-blue-500 font-black uppercase mb-2 block italic">Elektrik Girişi (kWh)</label>
-                <input type="number" id="input-elek" placeholder="Yeni Fatura" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-blue-400">
+                <label class="text-[10px] text-blue-500 font-black uppercase mb-2 block italic">Yeni Elektrik Faturası (kWh)</label>
+                <input type="number" id="input-elek" placeholder="0" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-blue-400">
                 <p class="text-[8px] text-blue-400 mt-2 font-bold uppercase">Hedef: <span id="target-e">---</span> kWh altı</p>
             </div>
-            
             <div class="bg-orange-50 border border-orange-100 p-5 rounded-3xl">
-                <label class="text-[10px] text-orange-500 font-black uppercase mb-2 block italic">Doğal Gaz Girişi (m³)</label>
-                <input type="number" id="input-gaz" placeholder="Yeni Fatura" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-orange-400">
+                <label class="text-[10px] text-orange-500 font-black uppercase mb-2 block italic">Yeni Doğal Gaz Faturası (m³)</label>
+                <input type="number" id="input-gaz" placeholder="0" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-orange-400">
                 <p class="text-[8px] text-orange-400 mt-2 font-bold uppercase">Hedef: <span id="target-g">---</span> m³ altı</p>
             </div>
+            <button onclick="processEntry()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest">VERİLERİ ANALİZ ET</button>
+        </div>
 
-            <button onclick="processEntry()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest mt-2">VERİLERİ ANALİZ ET</button>
+        <div id="view-rewards" class="hidden space-y-4">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Puanlarını Ödüle Dönüştür</h3>
+            <div class="space-y-3">
+                <div class="reward-card bg-white border-l-4 border-l-blue-500">
+                    <div class="text-2xl">🚌</div>
+                    <div class="flex-1">
+                        <h4 class="text-[11px] font-black uppercase">5 Ücretsiz Biniş</h4>
+                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">Şehir İçi Toplu Taşıma</p>
+                    </div>
+                    <div class="text-[10px] font-black text-blue-600">500 Puan</div>
+                </div>
+                <div class="reward-card bg-white border-l-4 border-l-amber-500">
+                    <div class="text-2xl">🏛️</div>
+                    <div class="flex-1">
+                        <h4 class="text-[11px] font-black uppercase">MüzeKart İndirimi</h4>
+                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">%50 İndirim Kuponu</p>
+                    </div>
+                    <div class="text-[10px] font-black text-amber-600">300 Puan</div>
+                </div>
+                <div class="reward-card bg-white border-l-4 border-l-emerald-500">
+                    <div class="text-2xl">☕️</div>
+                    <div class="flex-1">
+                        <h4 class="text-[11px] font-black uppercase">Sosyal Tesis Kafe</h4>
+                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">2 Adet Ücretsiz İçecek</p>
+                    </div>
+                    <div class="text-[10px] font-black text-emerald-600">150 Puan</div>
+                </div>
+                <div class="reward-card bg-white border-l-4 border-l-red-500">
+                    <div class="text-2xl">🍞</div>
+                    <div class="flex-1">
+                        <h4 class="text-[11px] font-black uppercase">Halk Ekmek Çeki</h4>
+                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">10 Adet Ekmek Kuponu</p>
+                    </div>
+                    <div class="text-[10px] font-black text-red-600">200 Puan</div>
+                </div>
+            </div>
+            <p class="text-[9px] text-slate-400 font-bold italic text-center mt-6">* Ödüller yerel yönetimler ve işbirlikleriyle simüle edilmiştir.</p>
         </div>
 
         <div id="view-league" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest italic">Yarışma Grupları</h3>
+                <button onclick="addNewGroup()" class="bg-emerald-600 text-white text-[9px] font-black px-3 py-1.5 rounded-lg shadow-md">+ GRUP OLUŞTUR</button>
+            </div>
             <div id="league-list" class="space-y-3"></div>
         </div>
     </div>
@@ -107,30 +145,26 @@
             <i class="fa-solid fa-house text-lg"></i><span>Panel</span>
         </div>
         <div onclick="nav('scan', 'VERİ EKLE')" id="nav-scan" class="nav-btn">
-            <i class="fa-solid fa-plus-square text-lg"></i><span>Veri Ekle</span>
+            <i class="fa-solid fa-plus-square text-lg"></i><span>Veri</span>
+        </div>
+        <div onclick="nav('rewards', 'ÖDÜLLER')" id="nav-rewards" class="nav-btn">
+            <i class="fa-solid fa-gift text-lg"></i><span>Ödül</span>
         </div>
         <div onclick="nav('league', 'LİG')" id="nav-league" class="nav-btn">
-            <i class="fa-solid fa-ranking-star text-lg"></i><span>Lig</span>
+            <i class="fa-solid fa-trophy text-lg"></i><span>Lig</span>
         </div>
     </div>
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('ekoLig_Final_Dual')) || {
+    let state = JSON.parse(localStorage.getItem('ekoLig_TR_Final')) || {
         e1: null, e2: null, g1: null, g2: null,
-        score: 0, badges: [], setupComplete: false
+        score: 0, badges: [], setupComplete: false, customGroups: []
     };
 
     const badgeData = [
-        {id:'b1', name:'Enerji Mimarı', icon:'⚡️', cat:'elektrik'},
-        {id:'b2', name:'Gaz Avcısı', icon:'🔥', cat:'gaz'}
-    ];
-
-    const competitors = [
-        {n: "Siz", s: 0, me: true},
-        {n: "Ali (Yandaki Apt.)", s: 600},
-        {n: "Zeynep", s: 450},
-        {n: "Eko-Can", s: 280}
+        {id:'b1', name:'Enerji Mimarı', icon:'⚡️'},
+        {id:'b2', name:'Gaz Avcısı', icon:'🔥'}
     ];
 
     function finishSetup() {
@@ -138,9 +172,7 @@
         const e2 = parseFloat(document.getElementById('base-e2').value);
         const g1 = parseFloat(document.getElementById('base-g1').value);
         const g2 = parseFloat(document.getElementById('base-g2').value);
-        
-        if(!e1 || !e2 || !g1 || !g2) return alert("Lütfen tüm alanları doldurun.");
-        
+        if(!e1 || !e2 || !g1 || !g2) return alert("Eksik veri!");
         state = {...state, e1, e2, g1, g2, setupComplete: true};
         save();
         document.getElementById('setup-overlay').style.display = 'none';
@@ -149,37 +181,25 @@
     function processEntry() {
         const curE = parseFloat(document.getElementById('input-elek').value);
         const curG = parseFloat(document.getElementById('input-gaz').value);
-        
-        if(!curE && !curG) return alert("Analiz için en az bir veri girin.");
-
         let bonus = 0;
         const avgE = (state.e1 + state.e2) / 2;
         const avgG = (state.g1 + state.g2) / 2;
+        if (curE && (avgE - curE) / avgE >= 0.05) { bonus += 150; if(!state.badges.includes('b1')) state.badges.push('b1'); }
+        if (curG && (avgG - curG) / avgG >= 0.05) { bonus += 150; if(!state.badges.includes('b2')) state.badges.push('b2'); }
+        if(bonus > 0) { state.score += bonus; alert(`✅ Başarılı! ${bonus} Puan ve Rozet kazandın.`); }
+        else { alert("❌ Tasarruf yetersiz. %5 hedefine ulaşılamadı."); }
+        save(); nav('home', 'PANEL');
+    }
 
-        if (curE && (avgE - curE) / avgE >= 0.05) {
-            bonus += 150;
-            if(!state.badges.includes('b1')) state.badges.push('b1');
-        }
-        if (curG && (avgG - curG) / avgG >= 0.05) {
-            bonus += 150;
-            if(!state.badges.includes('b2')) state.badges.push('b2');
-        }
-
-        if(bonus > 0) {
-            state.score += bonus;
-            alert(`✅ Başarılı! ${bonus} Puan ve Rozet kazandın.`);
-        } else {
-            alert("❌ Tasarruf oranı %5'in altında kaldı. Puan kazanılamadı.");
-        }
-        save();
-        nav('home', 'PANEL');
+    function addNewGroup() {
+        const name = prompt("Yeni grup adı? (Örn: 10-A Sınıfı, Kuzenler)");
+        if(name) { state.customGroups.push(name); save(); alert(name + " grubu oluşturuldu!"); }
     }
 
     function render() {
         document.getElementById('score-display').innerText = state.score;
-        const avgE = ((state.e1 + state.e2) / 2).toFixed(1);
-        const avgG = ((state.g1 + state.g2) / 2).toFixed(1);
-        
+        const avgE = ((state.e1 + state.e2) / 2 || 0).toFixed(1);
+        const avgG = ((state.g1 + state.g2) / 2 || 0).toFixed(1);
         document.getElementById('avg-e').innerText = state.setupComplete ? avgE : "0";
         document.getElementById('avg-g').innerText = state.setupComplete ? avgG : "0";
         document.getElementById('target-e').innerText = (avgE * 0.95).toFixed(1);
@@ -188,33 +208,31 @@
         const bCont = document.getElementById('badge-container');
         bCont.innerHTML = badgeData.map(b => {
             const owned = state.badges.includes(b.id);
-            return `
-                <div class="card m-0 flex items-center gap-4 badge-card ${owned ? 'badge-owned' : 'opacity-40'}">
-                    <div class="text-3xl">${owned ? b.icon : '🔒'}</div>
-                    <div><h4 class="text-[10px] font-black uppercase">${b.name}</h4><p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">${owned ? 'Kazanıldı' : 'Hedef: -%5'}</p></div>
-                </div>`;
+            return `<div class="card m-0 flex items-center gap-4 ${owned ? 'bg-white border-2 border-emerald-500 shadow-sm' : 'opacity-40'}">
+                <div class="text-3xl">${owned ? b.icon : '🔒'}</div>
+                <div><h4 class="text-[10px] font-black uppercase">${b.name}</h4><p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">${owned ? 'Kazanıldı' : 'Hedef: -%5'}</p></div>
+            </div>`;
         }).join('');
 
         const lList = document.getElementById('league-list');
-        competitors[0].s = state.score;
-        const sorted = [...competitors].sort((a,b) => b.s - a.s);
-        lList.innerHTML = sorted.map((c, i) => `
-            <div class="flex items-center p-4 rounded-2xl border ${c.me ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white border-slate-100'}">
-                <span class="w-8 font-black text-xs">#${i+1}</span>
-                <span class="flex-1 font-bold text-xs uppercase italic">${c.n}</span>
-                <span class="font-black text-xs">${c.s} P</span>
+        const defaultGroups = ["Genel Lig", "Apartman"];
+        const allGroups = [...defaultGroups, ...state.customGroups];
+        lList.innerHTML = allGroups.map(g => `
+            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="text-[11px] font-black uppercase text-slate-700">${g}</span>
+                <span class="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase">Sıralamaya Bak</span>
             </div>`).join('');
     }
 
-    function save() { localStorage.setItem('ekoLig_Final_Dual', JSON.stringify(state)); render(); }
+    function save() { localStorage.setItem('ekoLig_TR_Final', JSON.stringify(state)); render(); }
     function nav(id, title) {
-        ['home', 'scan', 'league'].forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
-        ['home', 'scan', 'league'].forEach(v => document.getElementById('nav-' + v).classList.remove('active'));
+        ['home', 'scan', 'rewards', 'league'].forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
+        ['home', 'scan', 'rewards', 'league'].forEach(v => document.getElementById('nav-' + v).classList.remove('active'));
         document.getElementById('view-' + id).classList.remove('hidden');
         document.getElementById('nav-' + id).classList.add('active');
         document.getElementById('view-title').innerText = title;
     }
-    function resetApp() { if(confirm("Sıfırlansın mı?")) { localStorage.clear(); location.reload(); } }
+    function resetApp() { if(confirm("TÜM VERİLER SİLİNECEK! Emin misin?")) { localStorage.clear(); location.reload(); } }
     window.onload = () => { if(state.setupComplete) document.getElementById('setup-overlay').style.display = 'none'; render(); };
 </script>
 </body>
