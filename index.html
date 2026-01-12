@@ -17,7 +17,7 @@
         .badge-owned { background: #ffffff !important; border-color: #10b981 !important; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1); opacity: 1 !important; }
         .hidden { display: none; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        #setup-overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; padding: 30px; }
+        #setup-overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -26,24 +26,28 @@
     
     <div id="setup-overlay">
         <h2 class="text-2xl font-black text-emerald-600 mb-2 italic uppercase">Hoş Geldin!</h2>
-        <p class="text-sm text-slate-500 mb-8 font-semibold">Tasarruf hedefini belirlemek için son iki aya ait elektrik faturanı girmelisin.</p>
+        <p class="text-xs text-slate-500 mb-6 font-semibold uppercase tracking-tighter">Tasarruf hedefini belirlemek için son iki ayın verilerini girmelisin.</p>
         
         <div class="space-y-6 flex-1">
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">1. Ay Tüketimi (kWh)</label>
-                <input type="number" id="base-m1" placeholder="Örn: 170" class="w-full bg-slate-100 p-4 rounded-2xl text-xl font-bold outline-none border-2 border-transparent focus:border-emerald-500">
+            <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                <h4 class="text-[10px] font-black text-blue-600 uppercase mb-3"><i class="fa-solid fa-bolt mr-2"></i>Elektrik Baz Verileri (kWh)</h4>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="base-e1" placeholder="1. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-blue-200">
+                    <input type="number" id="base-e2" placeholder="2. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-blue-200">
+                </div>
             </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">2. Ay Tüketimi (kWh)</label>
-                <input type="number" id="base-m2" placeholder="Örn: 150" class="w-full bg-slate-100 p-4 rounded-2xl text-xl font-bold outline-none border-2 border-transparent focus:border-emerald-500">
-            </div>
-            <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                <p class="text-[10px] text-emerald-700 font-bold italic text-center">Sistem bu iki ayın ortalamasını "Baz Eşik Değer" olarak kabul edecektir.</p>
+
+            <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                <h4 class="text-[10px] font-black text-orange-600 uppercase mb-3"><i class="fa-solid fa-fire mr-2"></i>Doğal Gaz Baz Verileri (m³)</h4>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="base-g1" placeholder="1. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-orange-200">
+                    <input type="number" id="base-g2" placeholder="2. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-orange-200">
+                </div>
             </div>
         </div>
         
-        <button onclick="finishSetup()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm tracking-widest active:scale-95 transition-all">
-            HEDEFİMİ BELİRLE
+        <button onclick="finishSetup()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-sm tracking-widest mt-6">
+            HEDEFLERİMİ OLUŞTUR
         </button>
     </div>
 
@@ -58,48 +62,44 @@
     </div>
 
     <div id="content" class="flex-1 p-6 overflow-y-auto no-scrollbar pb-24">
-        
         <div id="view-home" class="space-y-6">
-            <div class="card bg-emerald-600 text-white p-6 shadow-lg shadow-emerald-100">
-                <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest mb-1">Referans Ortalaman</p>
-                <h2 class="text-3xl font-black mb-4"><span id="avg-display">0</span> <span class="text-sm font-normal opacity-80 uppercase tracking-tighter">kWh</span></h2>
-                <p class="text-[9px] font-bold bg-white/20 p-2 rounded-lg inline-block uppercase">Hedef: %5 Tasarruf</p>
+            <div class="grid grid-cols-2 gap-3 text-white">
+                <div class="bg-blue-600 p-4 rounded-3xl shadow-md">
+                    <p class="text-[8px] font-bold uppercase opacity-80">Elek. Ort.</p>
+                    <h3 class="text-xl font-black"><span id="avg-e">0</span> <small class="text-[10px]">kWh</small></h3>
+                </div>
+                <div class="bg-orange-500 p-4 rounded-3xl shadow-md">
+                    <p class="text-[8px] font-bold uppercase opacity-80">Gaz Ort.</p>
+                    <h3 class="text-xl font-black"><span id="avg-g">0</span> <small class="text-[10px]">m³</small></h3>
+                </div>
             </div>
 
             <div class="space-y-3">
                 <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Kazanılan Rozetler</h3>
-                <div id="badge-container" class="space-y-3">
-                    </div>
-                <button onclick="resetApp()" class="w-full text-[9px] text-slate-300 font-bold mt-8 uppercase tracking-widest hover:text-red-500">Verileri Sıfırla</button>
+                <div id="badge-container" class="space-y-3"></div>
+                <button onclick="resetApp()" class="w-full text-[9px] text-slate-300 font-bold mt-8 uppercase tracking-widest">Verileri Sıfırla</button>
             </div>
         </div>
 
-        <div id="view-scan" class="hidden space-y-6">
+        <div id="view-scan" class="hidden space-y-4">
             <div class="bg-blue-50 border border-blue-100 p-5 rounded-3xl">
-                <div class="flex items-center gap-3 mb-4 text-blue-600">
-                    <i class="fa-solid fa-bolt text-xl"></i>
-                    <h3 class="text-sm font-black uppercase tracking-widest">Elektrik Analizi</h3>
-                </div>
-                <p class="text-[10px] text-blue-400 font-bold mb-2 uppercase">Yeni Fatura Tüketimi (kWh)</p>
-                <input type="number" id="input-elek" placeholder="0.00" class="w-full bg-white p-4 rounded-2xl text-2xl font-black outline-none border-2 border-transparent focus:border-blue-500 text-blue-900">
+                <label class="text-[10px] text-blue-500 font-black uppercase mb-2 block italic">Elektrik Girişi (kWh)</label>
+                <input type="number" id="input-elek" placeholder="Yeni Fatura" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-blue-400">
+                <p class="text-[8px] text-blue-400 mt-2 font-bold uppercase">Hedef: <span id="target-e">---</span> kWh altı</p>
             </div>
             
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <p class="text-[10px] text-slate-500 font-bold italic leading-relaxed">
-                    * Rozet kazanmak için son iki ayın ortalamasından en az <span class="text-emerald-600" id="target-kwh">---</span> kWh altına düşmelisin.
-                </p>
+            <div class="bg-orange-50 border border-orange-100 p-5 rounded-3xl">
+                <label class="text-[10px] text-orange-500 font-black uppercase mb-2 block italic">Doğal Gaz Girişi (m³)</label>
+                <input type="number" id="input-gaz" placeholder="Yeni Fatura" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-orange-400">
+                <p class="text-[8px] text-orange-400 mt-2 font-bold uppercase">Hedef: <span id="target-g">---</span> m³ altı</p>
             </div>
 
-            <button onclick="processEntry()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-emerald-100 uppercase text-xs tracking-widest transition-transform active:scale-95">
-                VERİYİ ANALİZ ET
-            </button>
+            <button onclick="processEntry()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest mt-2">VERİLERİ ANALİZ ET</button>
         </div>
 
         <div id="view-league" class="hidden space-y-4">
-            <div id="league-list" class="space-y-3">
-                </div>
+            <div id="league-list" class="space-y-3"></div>
         </div>
-
     </div>
 
     <div class="flex border-t bg-white absolute bottom-0 w-full z-10">
@@ -116,99 +116,97 @@
 </div>
 
 <script>
-    // VERİ MODELİ
-    let state = JSON.parse(localStorage.getItem('ekoLig_Final')) || {
-        m1: null,
-        m2: null,
-        score: 0,
-        badges: [],
-        setupComplete: false
+    let state = JSON.parse(localStorage.getItem('ekoLig_Final_Dual')) || {
+        e1: null, e2: null, g1: null, g2: null,
+        score: 0, badges: [], setupComplete: false
     };
 
-    const badges = [
-        {id:'b1', name:'Enerji Mimarı', icon:'⚡️', desc:'%5 Tasarruf Eşiğini Geçtin'},
-        {id:'b2', name:'Su Savaşçısı', icon:'💧', desc:'Bilinçli Su Kullanımı'},
-        {id:'b3', name:'Gaz Avcısı', icon:'🔥', desc:'Isı Tasarrufu Ödülü'}
+    const badgeData = [
+        {id:'b1', name:'Enerji Mimarı', icon:'⚡️', cat:'elektrik'},
+        {id:'b2', name:'Gaz Avcısı', icon:'🔥', cat:'gaz'}
     ];
 
     const competitors = [
         {n: "Siz", s: 0, me: true},
-        {n: "Komşu Daire 4", s: 450},
-        {n: "Kuzen Melis", s: 320},
-        {n: "Eko-Can", s: 180}
+        {n: "Ali (Yandaki Apt.)", s: 600},
+        {n: "Zeynep", s: 450},
+        {n: "Eko-Can", s: 280}
     ];
 
-    // KURULUM TAMAMLAMA
     function finishSetup() {
-        const v1 = parseFloat(document.getElementById('base-m1').value);
-        const v2 = parseFloat(document.getElementById('base-m2').value);
+        const e1 = parseFloat(document.getElementById('base-e1').value);
+        const e2 = parseFloat(document.getElementById('base-e2').value);
+        const g1 = parseFloat(document.getElementById('base-g1').value);
+        const g2 = parseFloat(document.getElementById('base-g2').value);
         
-        if(!v1 || !v2) return alert("Lütfen baz verileri eksiksiz girin.");
+        if(!e1 || !e2 || !g1 || !g2) return alert("Lütfen tüm alanları doldurun.");
         
-        state.m1 = v1;
-        state.m2 = v2;
-        state.setupComplete = true;
+        state = {...state, e1, e2, g1, g2, setupComplete: true};
         save();
         document.getElementById('setup-overlay').style.display = 'none';
     }
 
-    // VERİ İŞLEME (ALGORİTMA)
     function processEntry() {
-        const current = parseFloat(document.getElementById('input-elek').value);
-        if(!current) return alert("Veri girilmedi!");
+        const curE = parseFloat(document.getElementById('input-elek').value);
+        const curG = parseFloat(document.getElementById('input-gaz').value);
+        
+        if(!curE && !curG) return alert("Analiz için en az bir veri girin.");
 
-        const avg = (state.m1 + state.m2) / 2;
-        const reduction = (avg - current) / avg;
+        let bonus = 0;
+        const avgE = (state.e1 + state.e2) / 2;
+        const avgG = (state.g1 + state.g2) / 2;
 
-        if (reduction >= 0.05) { // %5 Tasarruf Eşiği
-            state.score += 150;
+        if (curE && (avgE - curE) / avgE >= 0.05) {
+            bonus += 150;
             if(!state.badges.includes('b1')) state.badges.push('b1');
-            alert(`✅ BAŞARILI! %${(reduction*100).toFixed(1)} tasarruf sağladın. Rozet ve 150 Puan kazandın.`);
-            save();
-            nav('home', 'PANEL');
-        } else {
-            alert(`❌ TASARRUF YETERSİZ! %5 hedefine ulaşamadın. (Senin oranın: %${(reduction*100).toFixed(1)})`);
         }
-        document.getElementById('input-elek').value = "";
+        if (curG && (avgG - curG) / avgG >= 0.05) {
+            bonus += 150;
+            if(!state.badges.includes('b2')) state.badges.push('b2');
+        }
+
+        if(bonus > 0) {
+            state.score += bonus;
+            alert(`✅ Başarılı! ${bonus} Puan ve Rozet kazandın.`);
+        } else {
+            alert("❌ Tasarruf oranı %5'in altında kaldı. Puan kazanılamadı.");
+        }
+        save();
+        nav('home', 'PANEL');
     }
 
-    // ARAYÜZ GÜNCELLEME
     function render() {
         document.getElementById('score-display').innerText = state.score;
-        const avg = state.setupComplete ? ((state.m1 + state.m2) / 2).toFixed(1) : 0;
-        document.getElementById('avg-display').innerText = avg;
-        document.getElementById('target-kwh').innerText = (avg * 0.95).toFixed(1);
+        const avgE = ((state.e1 + state.e2) / 2).toFixed(1);
+        const avgG = ((state.g1 + state.g2) / 2).toFixed(1);
+        
+        document.getElementById('avg-e').innerText = state.setupComplete ? avgE : "0";
+        document.getElementById('avg-g').innerText = state.setupComplete ? avgG : "0";
+        document.getElementById('target-e').innerText = (avgE * 0.95).toFixed(1);
+        document.getElementById('target-g').innerText = (avgG * 0.95).toFixed(1);
 
-        // Rozetleri Listele
         const bCont = document.getElementById('badge-container');
-        bCont.innerHTML = badges.map(b => {
+        bCont.innerHTML = badgeData.map(b => {
             const owned = state.badges.includes(b.id);
             return `
                 <div class="card m-0 flex items-center gap-4 badge-card ${owned ? 'badge-owned' : 'opacity-40'}">
                     <div class="text-3xl">${owned ? b.icon : '🔒'}</div>
-                    <div class="flex-1">
-                        <h4 class="text-[10px] font-black uppercase text-slate-800">${b.name}</h4>
-                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">${b.desc}</p>
-                    </div>
-                </div>
-            `;
+                    <div><h4 class="text-[10px] font-black uppercase">${b.name}</h4><p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">${owned ? 'Kazanıldı' : 'Hedef: -%5'}</p></div>
+                </div>`;
         }).join('');
 
-        // Ligi Güncelle
         const lList = document.getElementById('league-list');
         competitors[0].s = state.score;
         const sorted = [...competitors].sort((a,b) => b.s - a.s);
         lList.innerHTML = sorted.map((c, i) => `
             <div class="flex items-center p-4 rounded-2xl border ${c.me ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white border-slate-100'}">
                 <span class="w-8 font-black text-xs">#${i+1}</span>
-                <span class="flex-1 font-bold text-xs uppercase">${c.n}</span>
+                <span class="flex-1 font-bold text-xs uppercase italic">${c.n}</span>
                 <span class="font-black text-xs">${c.s} P</span>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
 
-    // SİSTEM FONKSİYONLARI
-    function save() { localStorage.setItem('ekoLig_Final', JSON.stringify(state)); render(); }
+    function save() { localStorage.setItem('ekoLig_Final_Dual', JSON.stringify(state)); render(); }
     function nav(id, title) {
         ['home', 'scan', 'league'].forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
         ['home', 'scan', 'league'].forEach(v => document.getElementById('nav-' + v).classList.remove('active'));
@@ -216,12 +214,8 @@
         document.getElementById('nav-' + id).classList.add('active');
         document.getElementById('view-title').innerText = title;
     }
-    function resetApp() { if(confirm("Tüm veriler silinsin mi?")) { localStorage.clear(); location.reload(); } }
-
-    window.onload = () => {
-        if(state.setupComplete) document.getElementById('setup-overlay').style.display = 'none';
-        render();
-    };
+    function resetApp() { if(confirm("Sıfırlansın mı?")) { localStorage.clear(); location.reload(); } }
+    window.onload = () => { if(state.setupComplete) document.getElementById('setup-overlay').style.display = 'none'; render(); };
 </script>
 </body>
 </html>
