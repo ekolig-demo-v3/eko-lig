@@ -3,237 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eko-Lig | Final Prototip</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Eko-LİG: Sosyal Tasarruf Portalı</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; overflow: hidden; }
-        .app-container { max-width: 400px; margin: 0 auto; background: white; height: 100vh; display: flex; flex-direction: column; position: relative; }
-        .nav-btn { flex: 1; padding: 10px 2px; text-align: center; color: #94a3b8; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .nav-btn.active { color: #10b981; border-top: 3px solid #10b981; background: #f0fdf4; }
-        .nav-btn span { font-size: 9px; font-weight: 800; text-transform: uppercase; }
-        .card { background: #f1f5f9; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
-        .hidden { display: none; }
-        #setup-overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
-        .reward-card { border: 1px solid #e2e8f0; border-radius: 15px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        :root { --ana: #27ae60; --uyari: #e67e22; --hata: #e74c3c; --zemin: #f1f5f9; --koyu: #1e293b; --mavi: #3498db; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--zemin); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        
+        .konteynir { width: 100%; max-width: 1100px; background: white; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); padding: clamp(15px, 4vw, 30px); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 25px; margin-top: 20px; }
+        .kart { border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; background: #fff; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        
+        h1 { color: var(--ana); text-align: center; border-bottom: 3px solid var(--ana); padding-bottom: 10px; margin-bottom: 25px; }
+        h3 { border-left: 5px solid var(--ana); padding-left: 12px; color: var(--koyu); margin: 0 0 15px 0; font-size: 1.1rem; }
+
+        .fatura-kontrol { display: flex; gap: 8px; margin-bottom: 15px; }
+        .btn-tarat { flex: 1; background: #fff; color: var(--mavi); border: 1.5px dashed var(--mavi); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
+        .btn-tarat:hover { background: #f0f7ff; transform: translateY(-2px); }
+
+        input, select { width: 100%; padding: 12px; margin: 5px 0 10px 0; border: 1.5px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-size: 0.95rem; }
+        .uclu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        label { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-left: 5px; }
+
+        /* Rozetler */
+        .rozet-alani { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .rozet { padding: 8px 14px; border-radius: 20px; font-size: 0.75rem; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; transition: 0.4s; opacity: 0.5; }
+        .rozet.aktif { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2); }
+
+        /* Butonlar */
+        .btn { border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .btn-ana { background: var(--ana); color: white; margin-top: 15px; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+        .btn-ana:hover { background: #219150; transform: scale(1.02); }
+        .btn-kaydet { background: var(--uyari); color: white; display: none; margin-top: 25px; }
+
+        /* Lig ve Market */
+        .lig-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; align-items: center; }
+        .user-sira { background: #fff3e0; border: 2px solid var(--uyari); border-radius: 15px; font-weight: bold; color: #d35400; }
+        
+        .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .m-kart { background: #f8fafc; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; transition: 0.3s; }
+        .m-btn { width: 100%; border: none; padding: 10px; border-radius: 8px; font-size: 0.75rem; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        .m-aktif { background: var(--ana); color: white; }
+        .m-pasif { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+        #sonuc-paneli { display: none; text-align: center; margin-bottom: 25px; padding: 20px; border-radius: 20px; border: 3px solid #eee; transition: 0.5s; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div id="setup-overlay">
-        <h2 class="text-2xl font-black text-emerald-600 mb-2 italic uppercase text-center">EKO-LİG BAŞLIYOR</h2>
-        <p class="text-[10px] text-slate-500 mb-6 font-bold text-center uppercase tracking-widest">Tasarruf hedefini belirlemek için son iki ayın verilerini girmelisin.</p>
-        
-        <div class="space-y-4 flex-1">
-            <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                <h4 class="text-[10px] font-black text-blue-600 uppercase mb-3"><i class="fa-solid fa-bolt mr-2"></i>Elektrik Baz Verileri (kWh)</h4>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="number" id="base-e1" placeholder="1. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-blue-200">
-                    <input type="number" id="base-e2" placeholder="2. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-blue-200">
+<div class="konteynir">
+    <h1>🌱 EKO-LİG TASARRUF PORTALI</h1>
+
+    <div class="grid">
+        <div class="panel">
+            <div class="kart">
+                <h3>👤 Katılımcı Bilgileri</h3>
+                <label>Rumuz</label>
+                <input type="text" id="rumuz" placeholder="Örn: TasarrufCan_43">
+                
+                <label>Yarışma Grubu</label>
+                <select id="grupSecimi">
+                    <option value="ilce">Genel İl Ligi (Şehir İsmi)</option>
+                    <option value="apartman">Bizim Apartman (A Blok)</option>
+                    <option value="site">Mavi Site Sakinleri</option>
+                    <option value="okul">Atatürk Lisesi 11-B Grubu</option>
+                </select>
+
+                <h3>⚡ Elektrik Verileri (kWh)</h3>
+                <div class="fatura-kontrol">
+                    <button class="btn-tarat" onclick="simuleFatura('e')">📷 Fatura Tara</button>
+                    <button class="btn-tarat" onclick="simuleFatura('e')">🔗 QR Oku</button>
+                </div>
+                <div class="uclu">
+                    <div><label>1. Ay</label><input type="number" id="e1"></div>
+                    <div><label>2. Ay</label><input type="number" id="e2"></div>
+                    <div><label>Güncel</label><input type="number" id="eg" style="border-color: var(--mavi);"></div>
+                </div>
+
+                <h3 style="margin-top:20px;">🔥 Doğal Gaz Verileri (metreküp)</h3>
+                <div class="fatura-kontrol">
+                    <button class="btn-tarat" onclick="simuleFatura('g')">📷 Fatura Tara</button>
+                    <button class="btn-tarat" onclick="simuleFatura('g')">🔗 QR Oku</button>
+                </div>
+                <div class="uclu">
+                    <div><label>1. Ay</label><input type="number" id="g1"></div>
+                    <div><label>2. Ay</label><input type="number" id="g2"></div>
+                    <div><label>Güncel</label><input type="number" id="gg" style="border-color: var(--mavi);"></div>
+                </div>
+                
+                <button class="btn btn-ana" onclick="hesapla()">VERİLERİ ANALİZ ET & LİGE GİR</button>
+            </div>
+
+            <div class="kart" style="margin-top:20px;">
+                <h3>🏅 Kazanılan Rozetler</h3>
+                <div class="rozet-alani">
+                    <div class="rozet" id="r1">🌱 Bilinçli Başlangıç</div>
+                    <div class="rozet" id="r2">⚡ Enerji Muhafızı</div>
+                    <div class="rozet" id="r3">🔥 Verimlilik Elçisi</div>
+                    <div class="rozet" id="r4">🏅 Grup Lideri</div>
                 </div>
             </div>
-            <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                <h4 class="text-[10px] font-black text-orange-600 uppercase mb-3"><i class="fa-solid fa-fire mr-2"></i>Doğal Gaz Baz Verileri (m³)</h4>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="number" id="base-g1" placeholder="1. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-orange-200">
-                    <input type="number" id="base-g2" placeholder="2. Ay" class="bg-white p-3 rounded-xl text-sm font-bold outline-none border border-orange-200">
-                </div>
-            </div>
-        </div>
-        <button onclick="finishSetup()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-sm tracking-widest mt-4">HEDEFLERİMİ OLUŞTUR</button>
-    </div>
-
-    <div class="p-6 flex justify-between items-center border-b bg-white">
-        <div>
-            <h1 class="text-xl font-black text-emerald-600 italic leading-none">EKO-LİG</h1>
-            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1" id="view-title">PANEL</p>
-        </div>
-        <div class="bg-amber-100 text-amber-700 px-4 py-1.5 rounded-full font-black text-xs border border-amber-200">
-            <span id="score-display">0</span> ⭐️
-        </div>
-    </div>
-
-    <div id="content" class="flex-1 p-6 overflow-y-auto no-scrollbar pb-24">
-        
-        <div id="view-home" class="space-y-4">
-            <div class="grid grid-cols-2 gap-3 text-white">
-                <div class="bg-blue-600 p-4 rounded-3xl shadow-md">
-                    <p class="text-[8px] font-bold uppercase opacity-80">Elek. Ort.</p>
-                    <h3 class="text-xl font-black"><span id="avg-e">0</span> <small class="text-[10px]">kWh</small></h3>
-                </div>
-                <div class="bg-orange-500 p-4 rounded-3xl shadow-md">
-                    <p class="text-[8px] font-bold uppercase opacity-80">Gaz Ort.</p>
-                    <h3 class="text-xl font-black"><span id="avg-g">0</span> <small class="text-[10px]">m³</small></h3>
-                </div>
-            </div>
-            
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Kazanılan Rozetler</h3>
-            <div id="badge-container" class="space-y-2"></div>
-
-            <div class="mt-10 p-4 border-2 border-red-100 rounded-2xl bg-red-50 text-center">
-                <p class="text-[10px] text-red-600 font-bold mb-2 uppercase">Yeni bir test başlatmak için:</p>
-                <button onclick="resetApp()" class="w-full bg-red-600 text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-red-200">TÜM VERİLERİ SIFIRLA</button>
-            </div>
         </div>
 
-        <div id="view-scan" class="hidden space-y-4">
-            <div class="bg-blue-50 border border-blue-100 p-5 rounded-3xl">
-                <label class="text-[10px] text-blue-500 font-black uppercase mb-2 block italic">Yeni Elektrik Faturası (kWh)</label>
-                <input type="number" id="input-elek" placeholder="0" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-blue-400">
-                <p class="text-[8px] text-blue-400 mt-2 font-bold uppercase">Hedef: <span id="target-e">---</span> kWh altı</p>
+        <div class="panel">
+            <div id="sonuc-paneli">
+                <div id="ikon" style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+                <h2 id="mesajGoster" style="margin: 5px 0;">Analiz Bekleniyor...</h2>
+                <h1 id="puanGoster" style="margin: 0; color: var(--uyari);">0 Puan</h1>
             </div>
-            <div class="bg-orange-50 border border-orange-100 p-5 rounded-3xl">
-                <label class="text-[10px] text-orange-500 font-black uppercase mb-2 block italic">Yeni Doğal Gaz Faturası (m³)</label>
-                <input type="number" id="input-gaz" placeholder="0" class="w-full bg-white p-4 rounded-2xl text-xl font-black outline-none border-2 border-transparent focus:border-orange-400">
-                <p class="text-[8px] text-orange-400 mt-2 font-bold uppercase">Hedef: <span id="target-g">---</span> m³ altı</p>
-            </div>
-            <button onclick="processEntry()" class="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest">VERİLERİ ANALİZ ET</button>
-        </div>
 
-        <div id="view-rewards" class="hidden space-y-4">
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 italic">Puanlarını Ödüle Dönüştür</h3>
-            <div class="space-y-3">
-                <div class="reward-card bg-white border-l-4 border-l-blue-500">
-                    <div class="text-2xl">🚌</div>
-                    <div class="flex-1">
-                        <h4 class="text-[11px] font-black uppercase">5 Ücretsiz Biniş</h4>
-                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">Şehir İçi Toplu Taşıma</p>
+            <div class="kart">
+                <h3 id="ligBaslik">🏆 Tasarruf Ligi</h3>
+                <div id="ligTablo">
+                    <div class="lig-item"><span>Çevreci_Muhtar</span><span>%24.1 | 241 Pn</span></div>
+                    <div class="lig-item"><span>Esnaf_Hüseyin</span><span>%18.5 | 185 Pn</span></div>
+                    <div id="userRow" class="lig-item user-sira" style="display:none;">
+                        <span id="uName">SİZ</span><span id="uScore"></span>
                     </div>
-                    <div class="text-[10px] font-black text-blue-600">500 Puan</div>
-                </div>
-                <div class="reward-card bg-white border-l-4 border-l-amber-500">
-                    <div class="text-2xl">🏛️</div>
-                    <div class="flex-1">
-                        <h4 class="text-[11px] font-black uppercase">MüzeKart İndirimi</h4>
-                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">%50 İndirim Kuponu</p>
-                    </div>
-                    <div class="text-[10px] font-black text-amber-600">300 Puan</div>
-                </div>
-                <div class="reward-card bg-white border-l-4 border-l-emerald-500">
-                    <div class="text-2xl">☕️</div>
-                    <div class="flex-1">
-                        <h4 class="text-[11px] font-black uppercase">Sosyal Tesis Kafe</h4>
-                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">2 Adet Ücretsiz İçecek</p>
-                    </div>
-                    <div class="text-[10px] font-black text-emerald-600">150 Puan</div>
-                </div>
-                <div class="reward-card bg-white border-l-4 border-l-red-500">
-                    <div class="text-2xl">🍞</div>
-                    <div class="flex-1">
-                        <h4 class="text-[11px] font-black uppercase">Halk Ekmek Çeki</h4>
-                        <p class="text-[8px] text-slate-400 font-bold uppercase italic">10 Adet Ekmek Kuponu</p>
-                    </div>
-                    <div class="text-[10px] font-black text-red-600">200 Puan</div>
+                    <div class="lig-item"><span>Öğrenci_Ayşe</span><span>%12.2 | 122 Pn</span></div>
+                    <div class="lig-item"><span>DoğaDostu_Ali</span><span>%7.4 | 74 Pn</span></div>
                 </div>
             </div>
-            <p class="text-[9px] text-slate-400 font-bold italic text-center mt-6">* Ödüller yerel yönetimler ve işbirlikleriyle simüle edilmiştir.</p>
-        </div>
 
-        <div id="view-league" class="hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest italic">Yarışma Grupları</h3>
-                <button onclick="addNewGroup()" class="bg-emerald-600 text-white text-[9px] font-black px-3 py-1.5 rounded-lg shadow-md">+ GRUP OLUŞTUR</button>
+            <div class="kart" style="margin-top:20px;">
+                <h3>🎁 Eko-Market (Hemen Harca)</h3>
+                <div class="market-grid">
+                    <div class="m-kart"><span>🚌</span>Yerel Ulaşım (4 Ücretsiz Biniş Hakkı) (50 Pn)<button onclick="harca('Ulaşım Bileti', 50)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🐾</span>Askıda Mama (40 Pn)<button onclick="harca('Mama Bağışı', 40)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🛒</span>Market (200 Lira İndirim Çeki) (200 Pn)<button onclick="harca('Market İndirimi', 200)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>✏️</span>Askıda Kırtasiye (100 Pn)<button onclick="harca('Kırtasiye Çeki', 100)" class="m-btn m-pasif">Yetersiz</button></div>
+                </div>
             </div>
-            <div id="league-list" class="space-y-3"></div>
-        </div>
-    </div>
 
-    <div class="flex border-t bg-white absolute bottom-0 w-full z-10">
-        <div onclick="nav('home', 'PANEL')" id="nav-home" class="nav-btn active">
-            <i class="fa-solid fa-house text-lg"></i><span>Panel</span>
-        </div>
-        <div onclick="nav('scan', 'VERİ EKLE')" id="nav-scan" class="nav-btn">
-            <i class="fa-solid fa-plus-square text-lg"></i><span>Veri</span>
-        </div>
-        <div onclick="nav('rewards', 'ÖDÜLLER')" id="nav-rewards" class="nav-btn">
-            <i class="fa-solid fa-gift text-lg"></i><span>Ödül</span>
-        </div>
-        <div onclick="nav('league', 'LİG')" id="nav-league" class="nav-btn">
-            <i class="fa-solid fa-trophy text-lg"></i><span>Lig</span>
+            <button id="kaydetBtn" class="btn btn-kaydet" onclick="anketeGit()">✅ ANALİZİ KAYDET VE ANKETE GİT</button>
         </div>
     </div>
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('ekoLig_TR_Final')) || {
-        e1: null, e2: null, g1: null, g2: null,
-        score: 0, badges: [], setupComplete: false, customGroups: []
-    };
+let kullaniciPuani = 0;
 
-    const badgeData = [
-        {id:'b1', name:'Enerji Mimarı', icon:'⚡️'},
-        {id:'b2', name:'Gaz Avcısı', icon:'🔥'}
-    ];
+function simuleFatura(tip) {
+    alert("Fatura/QR başarıyla analiz edildi. Veriler otomatik dolduruluyor...");
+    if(tip === 'e') {
+        document.getElementById('e1').value = 650; 
+        document.getElementById('e2').value = 610; 
+        document.getElementById('eg').value = 520;
+    } else {
+        document.getElementById('g1').value = 1300; 
+        document.getElementById('g2').value = 1250; 
+        document.getElementById('gg').value = 980;
+    }
+}
 
-    function finishSetup() {
-        const e1 = parseFloat(document.getElementById('base-e1').value);
-        const e2 = parseFloat(document.getElementById('base-e2').value);
-        const g1 = parseFloat(document.getElementById('base-g1').value);
-        const g2 = parseFloat(document.getElementById('base-g2').value);
-        if(!e1 || !e2 || !g1 || !g2) return alert("Eksik veri!");
-        state = {...state, e1, e2, g1, g2, setupComplete: true};
-        save();
-        document.getElementById('setup-overlay').style.display = 'none';
+function hesapla() {
+    const e1 = parseFloat(document.getElementById('e1').value) || 0;
+    const e2 = parseFloat(document.getElementById('e2').value) || 0;
+    const eg = parseFloat(document.getElementById('eg').value) || 0;
+    const g1 = parseFloat(document.getElementById('g1').value) || 0;
+    const g2 = parseFloat(document.getElementById('g2').value) || 0;
+    const gg = parseFloat(document.getElementById('gg').value) || 0;
+
+    if(!eg || !gg) { alert("Lütfen güncel ay verilerini giriniz!"); return; }
+
+    const eskiOrt = ((e1 + e2) / 2) + ((g1 + g2) / 2);
+    const guncel = eg + gg;
+    const oran = ((eskiOrt - guncel) / eskiOrt) * 100;
+    kullaniciPuani = oran > 0 ? Math.floor(oran * 10) : 0;
+
+    const panel = document.getElementById('sonuc-paneli');
+    const mesaj = document.getElementById('mesajGoster');
+    const ikon = document.getElementById('ikon');
+    panel.style.display = "block";
+
+    if (oran >= 0) {
+        // TASARRUF DURUMU
+        ikon.innerText = "🏆";
+        panel.style.borderColor = "var(--ana)";
+        panel.style.background = "#f0fff4";
+        mesaj.innerHTML = `<span style="color:var(--ana)">%${oran.toFixed(1)} Tasarruf Sağlandı!</span>`;
+    } else {
+        // TÜKETİM ARTIŞI (Anlaşılır Dil)
+        const artis = Math.abs(oran).toFixed(1);
+        ikon.innerText = "⚠️";
+        panel.style.borderColor = "var(--hata)";
+        panel.style.background = "#fff5f5";
+        mesaj.innerHTML = `<span style="color:var(--hata)">Tüketiminiz %${artis} Arttı!</span>`;
     }
 
-    function processEntry() {
-        const curE = parseFloat(document.getElementById('input-elek').value);
-        const curG = parseFloat(document.getElementById('input-gaz').value);
-        let bonus = 0;
-        const avgE = (state.e1 + state.e2) / 2;
-        const avgG = (state.g1 + state.g2) / 2;
-        if (curE && (avgE - curE) / avgE >= 0.05) { bonus += 150; if(!state.badges.includes('b1')) state.badges.push('b1'); }
-        if (curG && (avgG - curG) / avgG >= 0.05) { bonus += 150; if(!state.badges.includes('b2')) state.badges.push('b2'); }
-        if(bonus > 0) { state.score += bonus; alert(`✅ Başarılı! ${bonus} Puan ve Rozet kazandın.`); }
-        else { alert("❌ Tasarruf yetersiz. %5 hedefine ulaşılamadı."); }
-        save(); nav('home', 'PANEL');
+    document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
+    
+    // Lig Başlığı & Kullanıcı Sırası
+    const secilenGrup = document.getElementById('grupSecimi').options[document.getElementById('grupSecimi').selectedIndex].text;
+    document.getElementById('ligBaslik').innerText = "🏆 " + secilenGrup;
+    document.getElementById('userRow').style.display = "flex";
+    document.getElementById('uName').innerText = (document.getElementById('rumuz').value || "SİZ").toUpperCase();
+    document.getElementById('uScore').innerText = (oran >= 0 ? "%" : "+%") + Math.abs(oran).toFixed(1) + " | " + kullaniciPuani + " Pn";
+
+    // Rozetler
+    document.getElementById('r1').classList.add('aktif');
+    if(kullaniciPuani > 80) document.getElementById('r2').classList.add('aktif');
+    if(kullaniciPuani > 150) document.getElementById('r3').classList.add('aktif');
+
+    // Market Güncelleme
+    const btns = document.querySelectorAll('.m-btn');
+    const maliyetler = [50, 40, 200, 100];
+    btns.forEach((btn, i) => {
+        if(kullaniciPuani >= maliyetler[i]) {
+            btn.innerText = "Kuponu Al";
+            btn.className = "m-btn m-aktif";
+            btn.disabled = false;
+        } else {
+            btn.innerText = "Yetersiz";
+            btn.className = "m-btn m-pasif";
+            btn.disabled = true;
+        }
+    });
+
+    document.getElementById('kaydetBtn').style.display = "block";
+    document.getElementById('kaydetBtn').scrollIntoView({behavior: "smooth"});
+}
+
+function harca(urun, bedel) {
+    if(kullaniciPuani >= bedel) {
+        kullaniciPuani -= bedel;
+        document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
+        alert("Harika! " + urun + " ödülünüz tanımlandı.\nKod: EKO-" + Math.floor(Math.random()*9000 + 1000));
+        // Market butonlarını tekrar kontrol et
+        hesapla(); 
     }
+}
 
-    function addNewGroup() {
-        const name = prompt("Yeni grup adı? (Örn: 10-A Sınıfı, Kuzenler)");
-        if(name) { state.customGroups.push(name); save(); alert(name + " grubu oluşturuldu!"); }
-    }
-
-    function render() {
-        document.getElementById('score-display').innerText = state.score;
-        const avgE = ((state.e1 + state.e2) / 2 || 0).toFixed(1);
-        const avgG = ((state.g1 + state.g2) / 2 || 0).toFixed(1);
-        document.getElementById('avg-e').innerText = state.setupComplete ? avgE : "0";
-        document.getElementById('avg-g').innerText = state.setupComplete ? avgG : "0";
-        document.getElementById('target-e').innerText = (avgE * 0.95).toFixed(1);
-        document.getElementById('target-g').innerText = (avgG * 0.95).toFixed(1);
-
-        const bCont = document.getElementById('badge-container');
-        bCont.innerHTML = badgeData.map(b => {
-            const owned = state.badges.includes(b.id);
-            return `<div class="card m-0 flex items-center gap-4 ${owned ? 'bg-white border-2 border-emerald-500 shadow-sm' : 'opacity-40'}">
-                <div class="text-3xl">${owned ? b.icon : '🔒'}</div>
-                <div><h4 class="text-[10px] font-black uppercase">${b.name}</h4><p class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">${owned ? 'Kazanıldı' : 'Hedef: -%5'}</p></div>
-            </div>`;
-        }).join('');
-
-        const lList = document.getElementById('league-list');
-        const defaultGroups = ["Genel Lig", "Apartman"];
-        const allGroups = [...defaultGroups, ...state.customGroups];
-        lList.innerHTML = allGroups.map(g => `
-            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span class="text-[11px] font-black uppercase text-slate-700">${g}</span>
-                <span class="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase">Sıralamaya Bak</span>
-            </div>`).join('');
-    }
-
-    function save() { localStorage.setItem('ekoLig_TR_Final', JSON.stringify(state)); render(); }
-    function nav(id, title) {
-        ['home', 'scan', 'rewards', 'league'].forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
-        ['home', 'scan', 'rewards', 'league'].forEach(v => document.getElementById('nav-' + v).classList.remove('active'));
-        document.getElementById('view-' + id).classList.remove('hidden');
-        document.getElementById('nav-' + id).classList.add('active');
-        document.getElementById('view-title').innerText = title;
-    }
-    function resetApp() { if(confirm("TÜM VERİLER SİLİNECEK! Emin misin?")) { localStorage.clear(); location.reload(); } }
-    window.onload = () => { if(state.setupComplete) document.getElementById('setup-overlay').style.display = 'none'; render(); };
+function anketeGit() {
+    const r = document.getElementById('rumuz').value || "Anonim";
+    const p = kullaniciPuani;
+    const g = document.getElementById('grupSecimi').value;
+    const url = `https://forms.gle/oX2Kg4d3PHeWWUPV6`;
+    window.open(url, "_blank");
+}
 </script>
 </body>
 </html>
