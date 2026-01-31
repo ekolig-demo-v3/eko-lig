@@ -3,53 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eko-LİG: Sosyal Tasarruf Portalı</title>
+    <title>Eko-LİG: Sosyal Tasarruf Portalı (TÜBİTAK 2204-C Demo)</title>
     <style>
         :root { --ana: #27ae60; --uyari: #e67e22; --hata: #e74c3c; --zemin: #f1f5f9; --koyu: #1e293b; --mavi: #3498db; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--zemin); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        
         .konteynir { width: 100%; max-width: 1100px; background: white; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); padding: clamp(15px, 4vw, 30px); position: relative; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 25px; margin-top: 20px; }
         .kart { border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; background: #fff; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        
         h1 { color: var(--ana); text-align: center; border-bottom: 3px solid var(--ana); padding-bottom: 10px; margin-bottom: 25px; }
         h3 { border-left: 5px solid var(--ana); padding-left: 12px; color: var(--koyu); margin: 0 0 15px 0; font-size: 1.1rem; }
-
-        /* Yeni: Grup Seçimi ve Oluşturma Alanı */
         .grup-ust-alan { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .btn-grup-ekle { background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--koyu); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: bold; white-space: nowrap; transition: 0.3s; }
         .btn-grup-ekle:hover { background: var(--ana); color: white; border-color: var(--ana); }
-
         .fatura-kontrol { display: flex; gap: 8px; margin-bottom: 15px; }
         .btn-tarat { flex: 1; background: #fff; color: var(--mavi); border: 1.5px dashed var(--mavi); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
-        .btn-tarat:hover { background: #f0f7ff; transform: translateY(-2px); }
-
         input, select { width: 100%; padding: 12px; margin: 5px 0 10px 0; border: 1.5px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-size: 0.95rem; }
         .uclu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         label { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-left: 5px; }
-
-        /* Tutorial Overlay */
-        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .tutorial-kart { background: white; padding: 30px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .tutorial-adim { font-weight: bold; color: var(--ana); margin-bottom: 10px; display: block; }
-        .tutorial-btn { background: var(--ana); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; }
-
-        /* Rozetler ve Diğerleri (Aynen Korundu) */
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .tutorial-kart { background: white; padding: 30px; border-radius: 20px; max-width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .tutorial-adim { font-weight: bold; color: var(--ana); margin-bottom: 10px; display: block; font-size: 1.2rem; }
+        .tutorial-btn { background: var(--ana); color: white; border: none; padding: 14px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; font-size: 1rem; }
         .rozet-alani { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .rozet { padding: 8px 14px; border-radius: 20px; font-size: 0.75rem; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; transition: 0.4s; opacity: 0.5; }
-        .rozet.aktif { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2); }
+        .rozet { padding: 8px 14px; border-radius: 20px; font-size: 0.75rem; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; opacity: 0.5; }
+        .rozet.aktif { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; opacity: 1; transform: scale(1.05); }
         .btn { border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
         .btn-ana { background: var(--ana); color: white; margin-top: 15px; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
-        .btn-ana:hover { background: #219150; transform: scale(1.02); }
-        .btn-kaydet { background: var(--uyari); color: white; display: none; margin-top: 25px; }
+        .btn-kaydet { background: var(--uyari); color: white; display: none; margin-top: 25px; animation: pulse 2s infinite; }
         .lig-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; align-items: center; }
-        .user-sira { background: #fff3e0; border: 2px solid var(--uyari); border-radius: 15px; font-weight: bold; color: #d35400; }
+        .user-sira { background: #fff3e0; border: 2px solid var(--uyari); border-radius: 15px; font-weight: bold; color: #d35400; margin: 10px 0; }
         .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .m-kart { background: #f8fafc; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; transition: 0.3s; }
-        .m-btn { width: 100%; border: none; padding: 10px; border-radius: 8px; font-size: 0.75rem; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        .m-kart { background: #f8fafc; padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; font-size: 0.85rem; }
+        .m-btn { width: 100%; border: none; padding: 8px; border-radius: 8px; font-size: 0.7rem; margin-top: 8px; cursor: pointer; font-weight: bold; }
         .m-aktif { background: var(--ana); color: white; }
-        .m-pasif { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
-        #sonuc-paneli { display: none; text-align: center; margin-bottom: 25px; padding: 20px; border-radius: 20px; border: 3px solid #eee; transition: 0.5s; }
+        .m-pasif { background: #e2e8f0; color: #94a3b8; }
+        #sonuc-paneli { display: none; text-align: center; margin-bottom: 25px; padding: 20px; border-radius: 20px; border: 3px solid #eee; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -58,26 +47,24 @@
     <div class="tutorial-kart">
         <span class="tutorial-adim" id="adimNo">Adım 1 / 3</span>
         <h2 id="adimBaslik">Hoş Geldiniz! 🌱</h2>
-        <p id="adimAciklama">Eko-LİG ile enerji tasarrufunu eğlenceye dönüştürün. Önce bilgilerinizi girin ve grubunuzu seçin.</p>
-        <button class="tutorial-btn" onclick="sonrakiAdim()">Anladım, Devam Et</button>
+        <p id="adimAciklama">Eko-LİG ile enerji tasarrufunu eğlenceye dönüştürün. Önce bilgilerinizi girin ve rekabet edeceğiniz grubunuzu seçin.</p>
+        <button class="tutorial-btn" onclick="sonrakiAdim()">Sonraki</button>
     </div>
 </div>
 
 <div class="konteynir">
     <h1>🌱 EKO-LİG TASARRUF PORTALI</h1>
-
     <div class="grid">
         <div class="panel">
             <div class="kart">
                 <h3>👤 Katılımcı Bilgileri</h3>
                 <label>Rumuz</label>
                 <input type="text" id="rumuz" placeholder="Örn: TasarrufCan_43">
-                
                 <div class="grup-ust-alan">
                     <label style="margin:0; flex-grow:1;">Yarışma Grubu</label>
                     <button class="btn-grup-ekle" onclick="yeniGrupEkle()">+ Grup Oluştur</button>
                 </div>
-                <select id="grupSecimi">
+                <select id="grupSecimi" onchange="ligiGuncelle()">
                     <option value="ilce">Genel İl Ligi (Şehir İsmi)</option>
                     <option value="apartman">Bizim Apartman (A Blok)</option>
                     <option value="site">Mavi Site Sakinleri</option>
@@ -90,22 +77,21 @@
                     <button class="btn-tarat" onclick="simuleFatura('e')">🔗 QR Oku</button>
                 </div>
                 <div class="uclu">
-                    <div><label>1. Ay</label><input type="number" id="e1"></div>
-                    <div><label>2. Ay</label><input type="number" id="e2"></div>
-                    <div><label>Güncel</label><input type="number" id="eg" style="border-color: var(--mavi);"></div>
+                    <div><label>1. Ay</label><input type="number" id="e1" placeholder="---"></div>
+                    <div><label>2. Ay</label><input type="number" id="e2" placeholder="---"></div>
+                    <div><label>Güncel</label><input type="number" id="eg" placeholder="Yeni" style="border-color: var(--mavi);"></div>
                 </div>
 
-                <h3 style="margin-top:20px;">🔥 Doğal Gaz Verileri (metreküp)</h3>
+                <h3 style="margin-top:20px;">🔥 Doğal Gaz Verileri (m³)</h3>
                 <div class="fatura-kontrol">
                     <button class="btn-tarat" onclick="simuleFatura('g')">📷 Fatura Tara</button>
                     <button class="btn-tarat" onclick="simuleFatura('g')">🔗 QR Oku</button>
                 </div>
                 <div class="uclu">
-                    <div><label>1. Ay</label><input type="number" id="g1"></div>
-                    <div><label>2. Ay</label><input type="number" id="g2"></div>
-                    <div><label>Güncel</label><input type="number" id="gg" style="border-color: var(--mavi);"></div>
+                    <div><label>1. Ay</label><input type="number" id="g1" placeholder="---"></div>
+                    <div><label>2. Ay</label><input type="number" id="g2" placeholder="---"></div>
+                    <div><label>Güncel</label><input type="number" id="gg" placeholder="Yeni" style="border-color: var(--mavi);"></div>
                 </div>
-                
                 <button class="btn btn-ana" onclick="hesapla()">VERİLERİ ANALİZ ET & LİGE GİR</button>
             </div>
 
@@ -126,31 +112,23 @@
                 <h2 id="mesajGoster" style="margin: 5px 0;">Analiz Bekleniyor...</h2>
                 <h1 id="puanGoster" style="margin: 0; color: var(--uyari);">0 Puan</h1>
             </div>
-
             <div class="kart">
                 <h3 id="ligBaslik">🏆 Tasarruf Ligi</h3>
-                <div id="ligTablo">
-                    <div class="lig-item"><span>Çevreci_Muhtar</span><span>%24.1 | 241 Pn</span></div>
-                    <div class="lig-item"><span>Esnaf_Hüseyin</span><span>%18.5 | 185 Pn</span></div>
-                    <div id="userRow" class="lig-item user-sira" style="display:none;">
-                        <span id="uName">SİZ</span><span id="uScore"></span>
-                    </div>
-                    <div class="lig-item"><span>Öğrenci_Ayşe</span><span>%12.2 | 122 Pn</span></div>
-                    <div class="lig-item"><span>DoğaDostu_Ali</span><span>%7.4 | 74 Pn</span></div>
+                <div id="ligTablo"></div>
+                <div id="userRow" class="lig-item user-sira" style="display:none;">
+                    <span id="uName">SİZ</span><span id="uScore"></span>
                 </div>
             </div>
-
             <div class="kart" style="margin-top:20px;">
                 <h3>🎁 Eko-Market (Hemen Harca)</h3>
                 <div class="market-grid">
-                    <div class="m-kart"><span>🚌</span>Yerel Ulaşım (4 Ücretsiz) (50 Pn)<button onclick="harca('Ulaşım Bileti', 50)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>🐾</span>Askıda Mama (40 Pn)<button onclick="harca('Mama Bağışı', 40)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>🛒</span>Market 200 TL Çek (200 Pn)<button onclick="harca('Market İndirimi', 200)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>✏️</span>Askıda Kırtasiye (100 Pn)<button onclick="harca('Kırtasiye Çeki', 100)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🚌</span>Ulaşım (50 Pn)<button onclick="harca('Ulaşım', 50)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🐾</span>Askıda Mama (40 Pn)<button onclick="harca('Mama', 40)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🛒</span>Market (200 Pn)<button onclick="harca('Market', 200)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>✏️</span>Kırtasiye (100 Pn)<button onclick="harca('Kırtasiye', 100)" class="m-btn m-pasif">Yetersiz</button></div>
                 </div>
             </div>
-
-            <button id="kaydetBtn" class="btn btn-kaydet" onclick="anketeGit()">✅ ANALİZİ KAYDET VE ANKETE GİT</button>
+            <button id="kaydetBtn" class="btn btn-kaydet" onclick="anketeGit()">✅ ANALİZİ KAYDET VE DEĞERLENDİR</button>
         </div>
     </div>
 </div>
@@ -159,120 +137,91 @@
 let kullaniciPuani = 0;
 let mevcutAdim = 1;
 
-// --- YENİ: TUTORIAL FONKSİYONU ---
+const grupVerileri = {
+    "ilce": [{ n: "Çevreci_Muhtar", s: "%24.1 | 241 Pn" }, { n: "Esnaf_Hüseyin", s: "%18.5 | 185 Pn" }, { n: "Öğrenci_Ayşe", s: "%12.2 | 122 Pn" }],
+    "apartman": [{ n: "Yönetici_Asım", s: "%31.0 | 310 Pn" }, { n: "Daire_14_Ece", s: "%14.2 | 142 Pn" }, { n: "Emekli_Hasan", s: "%9.5 | 95 Pn" }],
+    "site": [{ n: "Site_Güvenlik", s: "%22.4 | 224 Pn" }, { n: "C_Blok_Sakinleri", s: "%19.8 | 198 Pn" }, { n: "Mavi_Papatya", s: "%11.0 | 110 Pn" }],
+    "okul": [{ n: "11B_Sınıfı", s: "%29.4 | 294 Pn" }, { n: "Matematik_Zümresi", s: "%15.6 | 156 Pn" }, { n: "Okul_Kaptanı", s: "%8.2 | 82 Pn" }]
+};
+
+window.onload = () => ligiGuncelle();
+
 function sonrakiAdim() {
     mevcutAdim++;
-    const adimNo = document.getElementById('adimNo');
-    const baslik = document.getElementById('adimBaslik');
-    const aciklama = document.getElementById('adimAciklama');
-
+    const n = document.getElementById('adimNo'), b = document.getElementById('adimBaslik'), a = document.getElementById('adimAciklama');
     if(mevcutAdim === 2) {
-        adimNo.innerText = "Adım 2 / 3";
-        baslik.innerText = "Tasarruf Et, Puan Kazan! 🏆";
-        aciklama.innerText = "Fatura verilerinizi girerek tüketiminizi analiz edin. Tasarruf oranınıza göre Eko-Puan ve Rozet kazanacaksınız.";
+        n.innerText = "Adım 2 / 3"; b.innerText = "Tasarruf Et, Puan Kazan! 🏆";
+        a.innerText = "Fatura verilerinizi elle girin veya 'Fatura Tara' butonuna basarak simüle edin. Tasarruf oranınız Eko-Puan kazandırır.";
     } else if(mevcutAdim === 3) {
-        adimNo.innerText = "Adım 3 / 3";
-        baslik.innerText = "Ödülleri Yakala! 🎁";
-        aciklama.innerText = "Kazandığınız puanları Eko-Market'te harcayabilir ve ligde üst sıralara tırmanabilirsiniz. Hazırsanız başlayalım!";
-    } else {
-        document.getElementById('tutorial').style.display = 'none';
-    }
+        n.innerText = "Adım 3 / 3"; b.innerText = "Ligde Yüksel ve Harca! 🎁";
+        a.innerText = "Kazandığınız puanlarla marketten ödül alabilir, grup liginde zirveye çıkabilirsiniz. Şimdi başlayın!";
+    } else { document.getElementById('tutorial').style.display = 'none'; }
 }
 
-// --- YENİ: GRUP EKLEME FONKSİYONU ---
+function ligiGuncelle() {
+    const secilen = document.getElementById('grupSecimi').value, liste = document.getElementById('ligTablo'), veriler = grupVerileri[secilen] || grupVerileri["ilce"];
+    liste.innerHTML = "";
+    veriler.forEach(v => { liste.innerHTML += `<div class="lig-item"><span>${v.n}</span><span>${v.s}</span></div>`; });
+    document.getElementById('ligBaslik').innerText = "🏆 " + document.getElementById('grupSecimi').options[document.getElementById('grupSecimi').selectedIndex].text;
+}
+
 function yeniGrupEkle() {
-    const yeniGrup = prompt("Oluşturmak istediğiniz grup adını girin:");
-    if(yeniGrup && yeniGrup.trim() !== "") {
-        const select = document.getElementById('grupSecimi');
-        const option = document.createElement("option");
-        option.text = yeniGrup;
-        option.value = yeniGrup.toLowerCase().replace(/\s/g, '');
-        select.add(option);
-        select.value = option.value;
-        alert(yeniGrup + " grubu başarıyla oluşturuldu ve seçildi!");
+    const yeni = prompt("Yeni Grup Adı:");
+    if(yeni) {
+        const s = document.getElementById('grupSecimi'), o = document.createElement("option");
+        o.text = yeni; o.value = "ozel"; s.add(o); s.value = "ozel"; ligiGuncelle();
     }
 }
 
-// --- MEVCUT FONKSİYONLAR (Aynen Korundu) ---
 function simuleFatura(tip) {
-    alert("Fatura/QR başarıyla analiz edildi. Veriler otomatik dolduruluyor...");
     if(tip === 'e') {
-        document.getElementById('e1').value = 650; document.getElementById('e2').value = 610; document.getElementById('eg').value = 520;
+        document.getElementById('e1').value = 650; document.getElementById('e2').value = 610; document.getElementById('eg').value = 540;
     } else {
-        document.getElementById('g1').value = 1300; document.getElementById('g2').value = 1250; document.getElementById('gg').value = 980;
+        document.getElementById('g1').value = 1300; document.getElementById('g2').value = 1250; document.getElementById('gg').value = 1100;
     }
+    alert("Örnek veriler başarıyla yüklendi!");
 }
 
 function hesapla() {
-    const e1 = parseFloat(document.getElementById('e1').value) || 0;
-    const e2 = parseFloat(document.getElementById('e2').value) || 0;
-    const eg = parseFloat(document.getElementById('eg').value) || 0;
-    const g1 = parseFloat(document.getElementById('g1').value) || 0;
-    const g2 = parseFloat(document.getElementById('g2').value) || 0;
-    const gg = parseFloat(document.getElementById('gg').value) || 0;
-
+    const e1 = parseFloat(document.getElementById('e1').value) || 0, e2 = parseFloat(document.getElementById('e2').value) || 0, eg = parseFloat(document.getElementById('eg').value) || 0;
+    const g1 = parseFloat(document.getElementById('g1').value) || 0, g2 = parseFloat(document.getElementById('g2').value) || 0, gg = parseFloat(document.getElementById('gg').value) || 0;
     if(!eg || !gg) { alert("Lütfen güncel ay verilerini giriniz!"); return; }
-
     const eskiOrt = ((e1 + e2) / 2) + ((g1 + g2) / 2);
     const guncel = eg + gg;
-    const oran = ((eskiOrt - guncel) / eskiOrt) * 100;
+    const oran = ((eskiOrt - guncel) / (eskiOrt || 1)) * 100;
     kullaniciPuani = oran > 0 ? Math.floor(oran * 10) : 0;
-
-    const panel = document.getElementById('sonuc-paneli');
-    const mesaj = document.getElementById('mesajGoster');
-    const ikon = document.getElementById('ikon');
-    panel.style.display = "block";
-
+    document.getElementById('sonuc-paneli').style.display = "block";
     if (oran >= 0) {
-        ikon.innerText = "🏆";
-        panel.style.borderColor = "var(--ana)";
-        panel.style.background = "#f0fff4";
-        mesaj.innerHTML = `<span style="color:var(--ana)">%${oran.toFixed(1)} Tasarruf Sağlandı!</span>`;
+        document.getElementById('ikon').innerText = "🏆"; document.getElementById('sonuc-paneli').style.borderColor = "var(--ana)";
+        document.getElementById('mesajGoster').innerHTML = `<span style="color:var(--ana)">%${oran.toFixed(1)} Tasarruf!</span>`;
     } else {
-        const artis = Math.abs(oran).toFixed(1);
-        ikon.innerText = "⚠️";
-        panel.style.borderColor = "var(--hata)";
-        panel.style.background = "#fff5f5";
-        mesaj.innerHTML = `<span style="color:var(--hata)">Tüketiminiz %${artis} Arttı!</span>`;
+        document.getElementById('ikon').innerText = "⚠️"; document.getElementById('sonuc-paneli').style.borderColor = "var(--hata)";
+        document.getElementById('mesajGoster').innerHTML = `<span style="color:var(--hata)">Artış: %${Math.abs(oran).toFixed(1)}</span>`;
     }
-
     document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
-    const secilenGrup = document.getElementById('grupSecimi').options[document.getElementById('grupSecimi').selectedIndex].text;
-    document.getElementById('ligBaslik').innerText = "🏆 " + secilenGrup;
     document.getElementById('userRow').style.display = "flex";
     document.getElementById('uName').innerText = (document.getElementById('rumuz').value || "SİZ").toUpperCase();
     document.getElementById('uScore').innerText = (oran >= 0 ? "%" : "+%") + Math.abs(oran).toFixed(1) + " | " + kullaniciPuani + " Pn";
-
     document.getElementById('r1').classList.add('aktif');
-    if(kullaniciPuani > 80) document.getElementById('r2').classList.add('aktif');
-    if(kullaniciPuani > 150) document.getElementById('r3').classList.add('aktif');
-
-    const btns = document.querySelectorAll('.m-btn');
-    const maliyetler = [50, 40, 200, 100];
+    if(kullaniciPuani > 50) document.getElementById('r2').classList.add('aktif');
+    if(kullaniciPuani > 100) document.getElementById('r3').classList.add('aktif');
+    const btns = document.querySelectorAll('.m-btn'), maliyetler = [50, 40, 200, 100];
     btns.forEach((btn, i) => {
-        if(kullaniciPuani >= maliyetler[i]) {
-            btn.innerText = "Kuponu Al"; btn.className = "m-btn m-aktif"; btn.disabled = false;
-        } else {
-            btn.innerText = "Yetersiz"; btn.className = "m-btn m-pasif"; btn.disabled = true;
-        }
+        if(kullaniciPuani >= maliyetler[i]) { btn.innerText = "Al"; btn.className = "m-btn m-aktif"; btn.disabled = false; }
+        else { btn.innerText = "Yetersiz"; btn.className = "m-btn m-pasif"; btn.disabled = true; }
     });
-
     document.getElementById('kaydetBtn').style.display = "block";
-    document.getElementById('kaydetBtn').scrollIntoView({behavior: "smooth"});
 }
 
-function harca(urun, bedel) {
-    if(kullaniciPuani >= bedel) {
-        kullaniciPuani -= bedel;
-        document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
-        alert("Harika! " + urun + " ödülünüz tanımlandı.\nKod: EKO-" + Math.floor(Math.random()*9000 + 1000));
-        hesapla(); 
+function harca(u, b) {
+    if(kullaniciPuani >= b) {
+        kullaniciPuani -= b; document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
+        alert(u + " Kodunuz: EKO-" + Math.floor(Math.random()*9000+1000));
+        hesapla();
     }
 }
 
-function anketeGit() {
-    window.open(`https://forms.gle/oX2Kg4d3PHeWWUPV6`, "_blank");
-}
+function anketeGit() { window.open(`https://forms.gle/oX2Kg4d3PHeWWUPV6`, "_blank"); }
 </script>
 </body>
 </html>
