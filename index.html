@@ -8,12 +8,17 @@
         :root { --ana: #27ae60; --uyari: #e67e22; --hata: #e74c3c; --zemin: #f1f5f9; --koyu: #1e293b; --mavi: #3498db; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--zemin); margin: 0; padding: 15px; display: flex; justify-content: center; }
         
-        .konteynir { width: 100%; max-width: 1100px; background: white; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); padding: clamp(15px, 4vw, 30px); }
+        .konteynir { width: 100%; max-width: 1100px; background: white; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); padding: clamp(15px, 4vw, 30px); position: relative; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 25px; margin-top: 20px; }
         .kart { border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; background: #fff; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         
         h1 { color: var(--ana); text-align: center; border-bottom: 3px solid var(--ana); padding-bottom: 10px; margin-bottom: 25px; }
         h3 { border-left: 5px solid var(--ana); padding-left: 12px; color: var(--koyu); margin: 0 0 15px 0; font-size: 1.1rem; }
+
+        /* Yeni: Grup Seçimi ve Oluşturma Alanı */
+        .grup-ust-alan { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .btn-grup-ekle { background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--koyu); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: bold; white-space: nowrap; transition: 0.3s; }
+        .btn-grup-ekle:hover { background: var(--ana); color: white; border-color: var(--ana); }
 
         .fatura-kontrol { display: flex; gap: 8px; margin-bottom: 15px; }
         .btn-tarat { flex: 1; background: #fff; color: var(--mavi); border: 1.5px dashed var(--mavi); padding: 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
@@ -23,31 +28,40 @@
         .uclu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         label { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-left: 5px; }
 
-        /* Rozetler */
+        /* Tutorial Overlay */
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .tutorial-kart { background: white; padding: 30px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .tutorial-adim { font-weight: bold; color: var(--ana); margin-bottom: 10px; display: block; }
+        .tutorial-btn { background: var(--ana); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; }
+
+        /* Rozetler ve Diğerleri (Aynen Korundu) */
         .rozet-alani { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .rozet { padding: 8px 14px; border-radius: 20px; font-size: 0.75rem; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; transition: 0.4s; opacity: 0.5; }
         .rozet.aktif { background: #dcfce7; color: #166534; border-color: #22c55e; font-weight: bold; opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2); }
-
-        /* Butonlar */
         .btn { border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
         .btn-ana { background: var(--ana); color: white; margin-top: 15px; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
         .btn-ana:hover { background: #219150; transform: scale(1.02); }
         .btn-kaydet { background: var(--uyari); color: white; display: none; margin-top: 25px; }
-
-        /* Lig ve Market */
         .lig-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; align-items: center; }
         .user-sira { background: #fff3e0; border: 2px solid var(--uyari); border-radius: 15px; font-weight: bold; color: #d35400; }
-        
         .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .m-kart { background: #f8fafc; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; transition: 0.3s; }
         .m-btn { width: 100%; border: none; padding: 10px; border-radius: 8px; font-size: 0.75rem; margin-top: 10px; cursor: pointer; font-weight: bold; }
         .m-aktif { background: var(--ana); color: white; }
         .m-pasif { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
-
         #sonuc-paneli { display: none; text-align: center; margin-bottom: 25px; padding: 20px; border-radius: 20px; border: 3px solid #eee; transition: 0.5s; }
     </style>
 </head>
 <body>
+
+<div id="tutorial" class="tutorial-overlay">
+    <div class="tutorial-kart">
+        <span class="tutorial-adim" id="adimNo">Adım 1 / 3</span>
+        <h2 id="adimBaslik">Hoş Geldiniz! 🌱</h2>
+        <p id="adimAciklama">Eko-LİG ile enerji tasarrufunu eğlenceye dönüştürün. Önce bilgilerinizi girin ve grubunuzu seçin.</p>
+        <button class="tutorial-btn" onclick="sonrakiAdim()">Anladım, Devam Et</button>
+    </div>
+</div>
 
 <div class="konteynir">
     <h1>🌱 EKO-LİG TASARRUF PORTALI</h1>
@@ -59,7 +73,10 @@
                 <label>Rumuz</label>
                 <input type="text" id="rumuz" placeholder="Örn: TasarrufCan_43">
                 
-                <label>Yarışma Grubu</label>
+                <div class="grup-ust-alan">
+                    <label style="margin:0; flex-grow:1;">Yarışma Grubu</label>
+                    <button class="btn-grup-ekle" onclick="yeniGrupEkle()">+ Grup Oluştur</button>
+                </div>
                 <select id="grupSecimi">
                     <option value="ilce">Genel İl Ligi (Şehir İsmi)</option>
                     <option value="apartman">Bizim Apartman (A Blok)</option>
@@ -126,10 +143,10 @@
             <div class="kart" style="margin-top:20px;">
                 <h3>🎁 Eko-Market (Hemen Harca)</h3>
                 <div class="market-grid">
-                    <div class="m-kart"><span>🚌</span>Yerel Ulaşım (4 Ücretsiz Biniş Hakkı) (2500 Pn)<button onclick="harca('Ulaşım Bileti', 2500)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>🐾</span>Askıda Mama (400 Pn)<button onclick="harca('Mama Bağışı', 400)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>🛒</span>Market (200 Lira İndirim Çeki) (4000 Pn)<button onclick="harca('Market İndirimi', 4000)" class="m-btn m-pasif">Yetersiz</button></div>
-                    <div class="m-kart"><span>✏️</span>Askıda Kırtasiye (500 Pn)<button onclick="harca('Kırtasiye Çeki', 500)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🚌</span>Yerel Ulaşım (4 Ücretsiz) (50 Pn)<button onclick="harca('Ulaşım Bileti', 50)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🐾</span>Askıda Mama (40 Pn)<button onclick="harca('Mama Bağışı', 40)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>🛒</span>Market 200 TL Çek (200 Pn)<button onclick="harca('Market İndirimi', 200)" class="m-btn m-pasif">Yetersiz</button></div>
+                    <div class="m-kart"><span>✏️</span>Askıda Kırtasiye (100 Pn)<button onclick="harca('Kırtasiye Çeki', 100)" class="m-btn m-pasif">Yetersiz</button></div>
                 </div>
             </div>
 
@@ -140,17 +157,49 @@
 
 <script>
 let kullaniciPuani = 0;
+let mevcutAdim = 1;
 
+// --- YENİ: TUTORIAL FONKSİYONU ---
+function sonrakiAdim() {
+    mevcutAdim++;
+    const adimNo = document.getElementById('adimNo');
+    const baslik = document.getElementById('adimBaslik');
+    const aciklama = document.getElementById('adimAciklama');
+
+    if(mevcutAdim === 2) {
+        adimNo.innerText = "Adım 2 / 3";
+        baslik.innerText = "Tasarruf Et, Puan Kazan! 🏆";
+        aciklama.innerText = "Fatura verilerinizi girerek tüketiminizi analiz edin. Tasarruf oranınıza göre Eko-Puan ve Rozet kazanacaksınız.";
+    } else if(mevcutAdim === 3) {
+        adimNo.innerText = "Adım 3 / 3";
+        baslik.innerText = "Ödülleri Yakala! 🎁";
+        aciklama.innerText = "Kazandığınız puanları Eko-Market'te harcayabilir ve ligde üst sıralara tırmanabilirsiniz. Hazırsanız başlayalım!";
+    } else {
+        document.getElementById('tutorial').style.display = 'none';
+    }
+}
+
+// --- YENİ: GRUP EKLEME FONKSİYONU ---
+function yeniGrupEkle() {
+    const yeniGrup = prompt("Oluşturmak istediğiniz grup adını girin:");
+    if(yeniGrup && yeniGrup.trim() !== "") {
+        const select = document.getElementById('grupSecimi');
+        const option = document.createElement("option");
+        option.text = yeniGrup;
+        option.value = yeniGrup.toLowerCase().replace(/\s/g, '');
+        select.add(option);
+        select.value = option.value;
+        alert(yeniGrup + " grubu başarıyla oluşturuldu ve seçildi!");
+    }
+}
+
+// --- MEVCUT FONKSİYONLAR (Aynen Korundu) ---
 function simuleFatura(tip) {
     alert("Fatura/QR başarıyla analiz edildi. Veriler otomatik dolduruluyor...");
     if(tip === 'e') {
-        document.getElementById('e1').value = 650; 
-        document.getElementById('e2').value = 610; 
-        document.getElementById('eg').value = 520;
+        document.getElementById('e1').value = 650; document.getElementById('e2').value = 610; document.getElementById('eg').value = 520;
     } else {
-        document.getElementById('g1').value = 1300; 
-        document.getElementById('g2').value = 1250; 
-        document.getElementById('gg').value = 980;
+        document.getElementById('g1').value = 1300; document.getElementById('g2').value = 1250; document.getElementById('gg').value = 980;
     }
 }
 
@@ -175,13 +224,11 @@ function hesapla() {
     panel.style.display = "block";
 
     if (oran >= 0) {
-        // TASARRUF DURUMU
         ikon.innerText = "🏆";
         panel.style.borderColor = "var(--ana)";
         panel.style.background = "#f0fff4";
         mesaj.innerHTML = `<span style="color:var(--ana)">%${oran.toFixed(1)} Tasarruf Sağlandı!</span>`;
     } else {
-        // TÜKETİM ARTIŞI (Anlaşılır Dil)
         const artis = Math.abs(oran).toFixed(1);
         ikon.innerText = "⚠️";
         panel.style.borderColor = "var(--hata)";
@@ -190,31 +237,23 @@ function hesapla() {
     }
 
     document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
-    
-    // Lig Başlığı & Kullanıcı Sırası
     const secilenGrup = document.getElementById('grupSecimi').options[document.getElementById('grupSecimi').selectedIndex].text;
     document.getElementById('ligBaslik').innerText = "🏆 " + secilenGrup;
     document.getElementById('userRow').style.display = "flex";
     document.getElementById('uName').innerText = (document.getElementById('rumuz').value || "SİZ").toUpperCase();
     document.getElementById('uScore').innerText = (oran >= 0 ? "%" : "+%") + Math.abs(oran).toFixed(1) + " | " + kullaniciPuani + " Pn";
 
-    // Rozetler
     document.getElementById('r1').classList.add('aktif');
     if(kullaniciPuani > 80) document.getElementById('r2').classList.add('aktif');
     if(kullaniciPuani > 150) document.getElementById('r3').classList.add('aktif');
 
-    // Market Güncelleme
     const btns = document.querySelectorAll('.m-btn');
     const maliyetler = [50, 40, 200, 100];
     btns.forEach((btn, i) => {
         if(kullaniciPuani >= maliyetler[i]) {
-            btn.innerText = "Kuponu Al";
-            btn.className = "m-btn m-aktif";
-            btn.disabled = false;
+            btn.innerText = "Kuponu Al"; btn.className = "m-btn m-aktif"; btn.disabled = false;
         } else {
-            btn.innerText = "Yetersiz";
-            btn.className = "m-btn m-pasif";
-            btn.disabled = true;
+            btn.innerText = "Yetersiz"; btn.className = "m-btn m-pasif"; btn.disabled = true;
         }
     });
 
@@ -227,19 +266,13 @@ function harca(urun, bedel) {
         kullaniciPuani -= bedel;
         document.getElementById('puanGoster').innerText = kullaniciPuani + " Eko-Puan";
         alert("Harika! " + urun + " ödülünüz tanımlandı.\nKod: EKO-" + Math.floor(Math.random()*9000 + 1000));
-        // Market butonlarını tekrar kontrol et
         hesapla(); 
     }
 }
 
 function anketeGit() {
-    const r = document.getElementById('rumuz').value || "Anonim";
-    const p = kullaniciPuani;
-    const g = document.getElementById('grupSecimi').value;
-    const url = `https://forms.gle/oX2Kg4d3PHeWWUPV6`;
-    window.open(url, "_blank");
+    window.open(`https://forms.gle/oX2Kg4d3PHeWWUPV6`, "_blank");
 }
 </script>
 </body>
-
 </html>
